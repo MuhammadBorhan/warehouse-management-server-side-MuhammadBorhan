@@ -16,11 +16,19 @@ async function run() {
         await client.connect();
         const productCollection = client.db("serviceProduct").collection("product");
 
+        // Real all Product
         app.get('/product', async (req, res) => {
             const query = {};
             const cursor = productCollection.find(query);
             const products = await cursor.toArray();
             res.send(products);
+        });
+
+        // Post or Create single product
+        app.post('/product', async (req, res) => {
+            const newItem = req.body;
+            const result = await productCollection.insertOne(newItem);
+            res.send(result);
         })
     }
     finally {
