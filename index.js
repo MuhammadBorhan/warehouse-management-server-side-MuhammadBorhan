@@ -25,12 +25,12 @@ async function run() {
         });
 
         // Read single product
-        app.get('/update/:id', async (req, res) => {
+        app.get('/product/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const update = await productCollection.findOne(query);
             res.send(update);
-        })
+        });
 
         // Post or Create single product
         app.post('/product', async (req, res) => {
@@ -38,6 +38,23 @@ async function run() {
             const result = await productCollection.insertOne(newItem);
             res.send(result);
         });
+
+
+        // Update quantity
+        app.put('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const user = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    quantity: user.addQuantity,
+                },
+            };
+            const result = await productCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
 
         // Delete single product
         app.delete('/product/:id', async (req, res) => {
