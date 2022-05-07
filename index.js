@@ -86,31 +86,24 @@ async function run() {
             const user = req.body;
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
-            const updateDoc = {
-                $set: {
-                    // quantity: user.addQuantity,
-                    quantity: (user.setQuantity),
-                },
-            };
+            let updateDoc;
+            if (user.reduceQuantity) {
+                updateDoc = {
+                    $set: {
+                        quantity: user.reduceQuantity,
+                    },
+                }
+            }
+            else {
+                updateDoc = {
+                    $set: {
+                        quantity: user.addQuantity,
+                    },
+                }
+            }
             const result = await orderCollection.updateOne(filter, updateDoc, options);
             res.send(result);
         });
-
-
-        // Update quantity reduce from quantity by deliver
-        // app.put('/order/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const data = req.body;
-        //     const filter = { _id: ObjectId(id) };
-        //     const options = { upsert: true };
-        //     const updateDoc = {
-        //         $set: {
-        //             quantity: data.addQuantity
-        //         },
-        //     };
-        //     const result = await orderCollection.updateOne(filter, updateDoc, options);
-        //     res.send(result);
-        // })
 
 
         // Delete single product
